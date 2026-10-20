@@ -1,0 +1,625 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Horarios MCE 2027-1 · Maestría en Comunicación Estratégica</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Instrument+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --red:#D92938; --petrol:#03738C; --gray:#999B9A; --light:#F2F2F2; --black:#000000;
+  --bg:var(--light); --ink:var(--black);
+  --panel:color-mix(in srgb,var(--bg) 90%,var(--gray));
+  --ink-soft:color-mix(in srgb,var(--ink) 72%,var(--bg));
+  --line:var(--gray);
+  --focus:var(--petrol);
+  --sem1:var(--petrol); --sem1-on:var(--light);
+  --sem2:var(--red);    --sem2-on:var(--light);
+  --sem3:var(--black);  --sem3-on:var(--light);
+  --font-d:"Bricolage Grotesque","Arial Narrow",system-ui,sans-serif;
+  --font-b:"Instrument Sans",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+  color-scheme:light;
+  box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px);
+  padding-bottom:env(safe-area-inset-bottom,0px);
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --bg:var(--black); --ink:var(--light); --focus:var(--light);
+    --sem3:var(--light); --sem3-on:var(--black); color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:var(--black); --ink:var(--light); --focus:var(--light);
+  --sem3:var(--light); --sem3-on:var(--black); color-scheme:dark;
+}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*,*::before,*::after{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:400 15px/1.45 var(--font-b);-webkit-text-size-adjust:100%}
+button,input,select{font:inherit;color:inherit}
+button{cursor:pointer}
+:focus-visible{outline:3px solid var(--focus);outline-offset:2px}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+
+/* Barra superior */
+.top{background:var(--black);color:var(--light);display:flex;align-items:center;justify-content:space-between;gap:16px;padding:10px clamp(16px,3vw,40px)}
+.top{flex-wrap:wrap}.topr{display:flex;align-items:center;gap:16px}.top .home{color:var(--light);font:600 13px/1 var(--font-b);text-decoration:underline;text-underline-offset:3px}
+.top b{font:700 14px/1.2 var(--font-d);letter-spacing:.01em}
+.top .theme{background:transparent;border:1px solid var(--gray);color:var(--light);border-radius:999px;padding:5px 14px;font-size:13px}
+.top .theme:hover{border-color:var(--light)}
+.rule{height:6px;background:linear-gradient(90deg,var(--red) 0 62%,var(--petrol) 62% 100%)}
+
+/* Hero */
+.hero{padding:clamp(24px,4vw,52px) clamp(16px,3vw,40px) 20px;display:grid;gap:28px 40px;grid-template-columns:minmax(0,1.5fr) minmax(280px,1fr);align-items:end;max-width:1500px;margin:0 auto}
+h1{font:800 clamp(2.1rem,5.2vw,4.1rem)/.98 var(--font-d);letter-spacing:-.025em;margin:0 0 14px;max-width:20ch;text-wrap:balance}
+.lead{margin:0;color:var(--ink-soft);max-width:56ch;font-size:16px}
+.next{background:var(--petrol);color:var(--light);padding:20px 22px;border-left:8px solid var(--red)}
+.next h2{margin:0 0 10px;font:600 14px/1.2 var(--font-b)}
+.next .when{font:800 1.5rem/1.1 var(--font-d);margin:0 0 2px}
+.next .hours{margin:0 0 12px;font-weight:600}
+.next .what{margin:0;font-weight:600;font-size:16px}
+.next .who{margin:2px 0 14px;font-size:14px}
+.next button{background:var(--light);color:var(--black);border:0;padding:8px 14px;font-weight:600;border-radius:2px}
+.next button:hover{background:var(--bg)}
+.next :focus-visible{outline-color:var(--light)}
+.strip-wrap{grid-column:1/-1}
+.strip-head{display:flex;flex-wrap:wrap;justify-content:space-between;gap:8px 24px;margin-bottom:10px;font-size:13px;color:var(--ink-soft)}
+.legend{display:flex;flex-wrap:wrap;gap:6px 16px}
+.legend i{display:inline-block;width:11px;height:11px;margin-right:6px;vertical-align:-1px}
+.strip{position:relative;display:flex;align-items:flex-end;gap:1px;height:82px;border-bottom:2px solid var(--ink)}
+.bar{flex:1 1 0;min-width:0;display:flex;flex-direction:column-reverse;gap:1px;cursor:pointer;height:100%;justify-content:flex-start}
+.bar:hover{outline:2px solid var(--ink);outline-offset:1px}
+.bar .seg{display:block;width:100%}
+.bar.empty{cursor:default}
+.bar.empty:hover{outline:none}
+.bar.sel{outline:2px solid var(--ink);outline-offset:1px}
+.today{position:absolute;top:0;bottom:0;width:0;border-left:2px dashed var(--ink);pointer-events:none}
+.today span{position:absolute;top:-1px;left:4px;font-size:11px;font-weight:700;background:var(--bg);padding:0 3px}
+.months{position:relative;height:20px;font-size:12px;font-weight:600}
+.months span{position:absolute;top:4px;transform:translateX(0)}
+
+/* Layout principal */
+
+/* Selector de semestre */
+.sempick{max-width:1500px;margin:0 auto;padding:6px clamp(16px,3vw,40px) 18px}
+.sempick-h{display:flex;flex-wrap:wrap;align-items:baseline;gap:4px 16px;border-top:3px solid var(--ink);padding-top:12px;margin-bottom:10px}
+.sempick-h h2{margin:0;font:800 clamp(1.4rem,3vw,2rem)/1.05 var(--font-d);letter-spacing:-.015em}
+.sempick-h p{margin:0;color:var(--ink-soft);font-size:15px}
+.semgrid{display:grid;grid-template-columns:.8fr repeat(3,1fr);gap:10px}
+.sembtn{display:grid;grid-template-columns:auto 1fr;grid-template-rows:auto auto;column-gap:14px;align-items:center;text-align:left;background:transparent;border:2px solid var(--ink);border-radius:2px;padding:12px 16px;min-height:86px}
+.sembtn:hover{background:var(--panel)}
+.sembtn .big{grid-row:1/3;font:800 clamp(2.4rem,5vw,3.4rem)/1 var(--font-d);min-width:1ch}
+.sembtn .t{font-weight:700;font-size:17px;align-self:end}
+.sembtn .m{font-size:13px;color:var(--ink-soft);align-self:start}
+.sembtn[aria-pressed="true"]{color:var(--on);background:var(--c);border-color:var(--c)}
+.sembtn[aria-pressed="true"] .m{color:inherit;opacity:.95}
+.sembtn.all{--c:var(--ink);--on:var(--bg)}
+.sembtn.sb1{--c:var(--sem1);--on:var(--sem1-on)}.sembtn.sb2{--c:var(--sem2);--on:var(--sem2-on)}.sembtn.sb3{--c:var(--sem3);--on:var(--sem3-on)}
+.sembtn.sb1,.sembtn.sb2,.sembtn.sb3{border-top-width:8px;border-top-color:var(--c)}
+.sembtn .big{display:block}
+@media (max-width:760px){.semgrid{grid-template-columns:1fr 1fr}.sembtn.all{grid-column:1/-1;min-height:64px}.sembtn{padding:10px 12px}}
+.layout{display:grid;grid-template-columns:300px minmax(0,1fr);gap:28px;padding:12px clamp(16px,3vw,40px) 60px;max-width:1500px;margin:0 auto;align-items:start}
+.filters{position:sticky;top:12px;max-height:calc(100vh - 24px);overflow:auto;border-top:3px solid var(--ink);padding-top:4px}
+.filters-head{display:flex;justify-content:space-between;align-items:center;padding:8px 0}
+.filters-head h2{margin:0;font:700 1.15rem/1.2 var(--font-d)}
+.linkbtn{background:none;border:0;padding:4px 0;text-decoration:underline;text-underline-offset:3px;font-weight:600}
+.linkbtn:disabled{opacity:.4;cursor:default;text-decoration:none}
+.close-drawer,.drawer-apply,.open-filters{display:none}
+details{border-top:1px solid var(--line)}
+summary{list-style:none;cursor:pointer;display:flex;justify-content:space-between;align-items:center;gap:8px;padding:11px 2px;font-weight:600}
+summary::-webkit-details-marker{display:none}
+summary::after{content:"+";font:500 20px/1 var(--font-d);color:var(--ink-soft)}
+details[open]>summary::after{content:"–"}
+.badge{background:var(--red);color:var(--light);font-size:12px;font-weight:700;border-radius:999px;min-width:20px;text-align:center;padding:1px 7px;margin-left:auto;margin-right:6px}
+.opts{padding:0 2px 12px;display:grid;gap:1px}
+.opts.long{max-height:300px;overflow:auto;padding-right:6px}
+.fs{padding:0 2px 8px}
+.fsearch{width:100%;padding:7px 9px;background:var(--bg);border:1.5px solid var(--gray);border-radius:2px;color:var(--ink)}
+.opt{display:grid;grid-template-columns:18px 1fr auto;gap:8px;align-items:start;padding:5px 0;cursor:pointer;line-height:1.3}
+.opt input{margin:2px 0 0;accent-color:var(--petrol);width:16px;height:16px}
+.opt .n,.chip .n{font-variant-numeric:tabular-nums;color:var(--ink-soft);font-size:12.5px}
+.opt.zero,.chip.zero{opacity:.45}
+.chips{display:flex;flex-wrap:wrap;gap:6px;padding:0 2px 12px}
+.chip{position:relative;display:inline-flex}
+.chip input{position:absolute;opacity:0;inset:0;margin:0;cursor:pointer}
+.chip span.c{display:inline-flex;gap:6px;align-items:baseline;border:1.5px solid var(--gray);padding:4px 10px;border-radius:2px;font-weight:500;font-size:14px}
+.chip input:checked+span.c{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.chip input:checked+span.c .n{color:inherit}
+.chip input:focus-visible+span.c{outline:3px solid var(--focus);outline-offset:2px}
+.chip:hover span.c{border-color:var(--ink)}
+.sub{padding:2px 2px 6px;font-size:13px;color:var(--ink-soft);font-weight:600}
+.dates{display:grid;grid-template-columns:1fr 1fr;gap:8px;padding:0 2px 10px}
+.dates label{display:grid;gap:3px;font-size:13px;font-weight:600;color:var(--ink-soft)}
+.dates input{background:var(--bg);border:1.5px solid var(--gray);padding:6px 6px;border-radius:2px;color:var(--ink);min-width:0}
+
+/* Resultados */
+.toolbar{display:flex;flex-wrap:wrap;gap:12px;align-items:center;padding:6px 0 12px;border-top:3px solid var(--ink)}
+.search{flex:1 1 260px;position:relative}
+.search input{width:100%;padding:10px 12px;background:var(--bg);border:1.5px solid var(--ink);border-radius:2px}
+.search input::placeholder{color:var(--ink-soft)}
+.tools{display:flex;gap:12px;align-items:center;flex-wrap:wrap}
+.seg-ctl{display:inline-flex;border:1.5px solid var(--ink)}
+.seg-ctl button{background:transparent;border:0;padding:9px 16px;font-weight:600}
+.seg-ctl button[aria-pressed="true"]{background:var(--ink);color:var(--bg)}
+.sortsel{display:flex;gap:6px;align-items:center;font-size:13px;color:var(--ink-soft)}
+.sortsel select{background:var(--bg);border:1.5px solid var(--gray);padding:8px 8px;border-radius:2px;color:var(--ink)}
+.summary{display:flex;flex-wrap:wrap;gap:4px 22px;padding:2px 0 12px;font-size:14px;color:var(--ink-soft)}
+.summary b{font:800 1.5rem/1 var(--font-d);color:var(--ink);margin-right:5px}
+.active{display:flex;flex-wrap:wrap;gap:6px;align-items:center;padding-bottom:12px}
+.tag{display:inline-flex;gap:8px;align-items:center;background:var(--ink);color:var(--bg);border:0;padding:4px 6px 4px 10px;font-size:13px;font-weight:500;border-radius:2px}
+.tag:hover{background:var(--red);color:var(--light)}
+.tag b{font-weight:700}
+.tag::after{content:"×";font-size:17px;line-height:1}
+
+/* Tabla */
+.tablewrap{overflow-x:auto;border-bottom:2px solid var(--ink)}
+table{border-collapse:collapse;width:100%;min-width:1180px;font-size:14px}
+th{position:sticky;top:0;background:var(--ink);color:var(--bg);text-align:left;font-weight:600;padding:0;white-space:nowrap}
+th button{width:100%;text-align:left;background:none;border:0;padding:11px 10px;font-weight:600;display:flex;gap:6px;justify-content:space-between;align-items:center}
+th button:focus-visible{outline-color:var(--bg);outline-offset:-3px}
+th .arr{font-size:10px;opacity:.5}
+th[aria-sort] .arr{opacity:1}
+td{padding:10px;border-top:1px solid var(--line);vertical-align:top}
+tbody tr:hover td{background:var(--panel)}
+td.asig{font-weight:600;min-width:220px}
+td.prof{min-width:170px}
+td.num{font-variant-numeric:tabular-nums;white-space:nowrap}
+td .wd{display:block;font-size:12.5px;color:var(--ink-soft)}
+td.muted{color:var(--ink-soft)}
+.pill{display:inline-block;font-size:12.5px;font-weight:700;padding:2px 8px;border-radius:2px;white-space:nowrap}
+.s1{background:var(--sem1);color:var(--sem1-on)} .s2{background:var(--sem2);color:var(--sem2-on)} .s3{background:var(--sem3);color:var(--sem3-on)}
+.pres{background:var(--ink);color:var(--bg)}
+.rem{border:1.5px solid var(--ink);padding:.5px 7px}
+.pending{font-style:italic;color:var(--ink-soft)}
+.empty-state{padding:56px 12px;text-align:center}
+.empty-state p{margin:0 0 12px;font-size:17px;font-weight:600}
+
+/* Calendario */
+.cal-head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:10px}
+.cal-head h3{margin:0;font:800 1.7rem/1 var(--font-d);text-transform:capitalize}
+.cal-nav{display:flex;gap:6px}
+.cal-nav button{background:transparent;border:1.5px solid var(--ink);padding:7px 14px;font-weight:600;border-radius:2px}
+.cal-nav button:disabled{opacity:.35;cursor:default}
+.grid{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));border-left:1px solid var(--line);border-top:1px solid var(--line)}
+.grid .dow{background:var(--ink);color:var(--bg);font-weight:600;font-size:13px;padding:7px 8px;border-right:1px solid var(--ink)}
+.day{min-height:112px;background:transparent;border:0;border-right:1px solid var(--line);border-bottom:1px solid var(--line);padding:6px;text-align:left;display:flex;flex-direction:column;gap:3px;align-items:stretch;border-radius:0}
+.day.out{background:var(--panel);cursor:default}
+.day:not(.out):hover{background:var(--panel)}
+.day.sel{outline:3px solid var(--ink);outline-offset:-3px}
+.day .dn{font-weight:700;font-size:13px}
+.day.today-c .dn{background:var(--red);color:var(--light);display:inline-block;align-self:flex-start;padding:0 6px;border-radius:2px}
+.ev{display:block;font-size:11.5px;line-height:1.25;padding:2px 5px;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;border:1.5px solid transparent}
+.ev.p.s1{background:var(--sem1);color:var(--sem1-on)} .ev.p.s2{background:var(--sem2);color:var(--sem2-on)} .ev.p.s3{background:var(--sem3);color:var(--sem3-on)}
+.ev.r{background:transparent;color:var(--ink)}
+.ev.r.s1{border-color:var(--sem1)} .ev.r.s2{border-color:var(--sem2)} .ev.r.s3{border-color:var(--sem3)}
+.more{font-size:11.5px;color:var(--ink-soft);font-weight:600}
+.dots{display:none;gap:3px;flex-wrap:wrap}
+.dots i{width:8px;height:8px;display:block}
+.dots i.s1{background:var(--sem1)} .dots i.s2{background:var(--sem2)} .dots i.s3{background:var(--sem3)}
+.cal-key{display:flex;flex-wrap:wrap;gap:6px 18px;font-size:13px;color:var(--ink-soft);padding:10px 0}
+.daypanel{border-top:3px solid var(--ink);margin-top:14px;padding-top:10px}
+.daypanel h3{margin:0 0 10px;font:700 1.2rem/1.2 var(--font-d)}
+.cards{display:grid;gap:10px;grid-template-columns:repeat(auto-fill,minmax(300px,1fr))}
+.card{border:1.5px solid var(--ink);padding:12px 14px;border-left-width:8px}
+.card.s1{border-left-color:var(--sem1)} .card.s2{border-left-color:var(--sem2)} .card.s3{border-left-color:var(--sem3)}
+.card h4{margin:0 0 2px;font-size:16px;line-height:1.25}
+.card .hh{font-weight:700;margin-bottom:4px;font-variant-numeric:tabular-nums}
+.card dl{margin:8px 0 0;display:grid;grid-template-columns:auto 1fr;gap:2px 12px;font-size:13px}
+.card dt{color:var(--ink-soft)} .card dd{margin:0}
+
+@media (max-width:1020px){
+  .hero{grid-template-columns:1fr;align-items:start}
+  .layout{grid-template-columns:1fr}
+  .open-filters{display:inline-flex;gap:8px;align-items:center;background:var(--ink);color:var(--bg);border:0;padding:10px 16px;font-weight:600;border-radius:2px}
+  .open-filters .badge{margin:0}
+  .filters{position:fixed;inset:0;z-index:50;max-height:none;background:var(--bg);border-top:0;padding:calc(env(safe-area-inset-top,0px) + 8px) 16px calc(env(safe-area-inset-bottom,0px) + 84px);transform:translateX(-100%);visibility:hidden;transition:transform .22s ease,visibility 0s .22s}
+  body.drawer .filters{transform:none;visibility:visible;transition:transform .22s ease}
+  body.drawer{overflow:hidden}
+  .close-drawer{display:inline-block}
+  .drawer-apply{display:block;position:fixed;left:0;right:0;bottom:0;padding:12px 16px calc(env(safe-area-inset-bottom,0px) + 12px);background:var(--bg);border-top:2px solid var(--ink);z-index:51}
+  .drawer-apply button{width:100%;padding:13px;background:var(--red);color:var(--light);border:0;font-weight:700;font-size:16px;border-radius:2px}
+  body:not(.drawer) .drawer-apply{display:none}
+}
+@media (max-width:760px){
+  .tablewrap{border-bottom:0;overflow:visible}
+  table,tbody,tr,td{display:block}
+  table{min-width:0}
+  thead{display:none}
+  tbody tr{display:grid;grid-template-columns:1fr 1fr;gap:8px 12px;border:1.5px solid var(--ink);padding:12px;margin-bottom:10px}
+  td{padding:0;border:0}
+  tbody tr:hover td{background:transparent}
+  td::before{content:attr(data-l);display:block;font-size:12px;color:var(--ink-soft);font-weight:600}
+  td.asig,td.prof,td.prog{grid-column:1/-1;min-width:0}
+  .day{min-height:58px;padding:4px}
+  .ev,.more{display:none}
+  .dots{display:flex}
+  .cal-head h3{font-size:1.35rem}
+}
+@media (prefers-reduced-motion:reduce){.filters{transition:none}}
+@media print{.filters,.top,.open-filters,.toolbar .tools,.strip-wrap{display:none}.layout{display:block}}
+</style>
+</head>
+<body>
+<header class="top">
+  <b>Maestría en Comunicación Estratégica</b>
+  <span class="topr"><a class="home" href="index.html">Todos los programas</a><button class="theme" id="theme" type="button" aria-label="Cambiar entre tema claro y oscuro">Tema</button></span>
+</header>
+<div class="rule"></div>
+
+<section class="hero">
+  <div>
+    <h1>Horarios MCE 2027-1</h1>
+    <p class="lead" id="lead"></p>
+  </div>
+  <aside class="next" id="next" aria-live="polite"></aside>
+  <div class="strip-wrap">
+    <div class="strip-head">
+      <span id="stripNote">Cada barra es un día de clase y su altura son las horas. Toca una barra para filtrar ese día.</span>
+      <span class="legend" aria-label="Leyenda">
+        <span><i style="background:var(--sem1)"></i>Semestre 1</span>
+        <span><i style="background:var(--sem2)"></i>Semestre 2</span>
+        <span><i style="background:var(--sem3)"></i>Semestre 3</span>
+        <span><i style="background:var(--gray);opacity:.5"></i>Fuera del filtro</span>
+      </span>
+    </div>
+    <div class="strip" id="strip"></div>
+    <div class="months" id="months" aria-hidden="true"></div>
+  </div>
+</section>
+
+<section class="sempick" aria-label="Elige tu semestre">
+  <div class="sempick-h"><h2>Elige tu semestre</h2><p>Toca tu semestre para ver solo tus asignaturas y sesiones.</p></div>
+  <div class="semgrid" id="semgrid" role="group" aria-label="Semestre"></div>
+</section>
+<main class="layout">
+  <aside class="filters" id="filters" aria-label="Filtros">
+    <div class="filters-head">
+      <h2>Filtros</h2>
+      <span>
+        <button class="linkbtn" id="clear" type="button">Limpiar todo</button>
+        <button class="linkbtn close-drawer" id="closeDrawer" type="button">Cerrar</button>
+      </span>
+    </div>
+    <div id="facets"></div>
+    <div class="drawer-apply"><button type="button" id="apply">Ver sesiones</button></div>
+  </aside>
+
+  <section aria-label="Resultados">
+    <div class="toolbar">
+      <button class="open-filters" id="openFilters" type="button">Filtros <span class="badge" id="fcount" hidden>0</span></button>
+      <div class="search">
+        <label class="sr" for="q">Buscar en todas las columnas</label>
+        <input id="q" type="search" placeholder="Buscar por asignatura, profesor, fecha, salón…" autocomplete="off">
+      </div>
+      <div class="tools">
+        <div class="seg-ctl" role="group" aria-label="Vista">
+          <button type="button" id="vTable" aria-pressed="true">Tabla</button>
+          <button type="button" id="vCal" aria-pressed="false">Calendario</button>
+        </div>
+        <label class="sortsel">Ordenar
+          <select id="sortSel"></select>
+        </label>
+      </div>
+    </div>
+    <div class="summary" id="summary" aria-live="polite"></div>
+    <div class="active" id="active"></div>
+    <div id="results"></div>
+  </section>
+</main>
+
+<script>
+const DATA = [{"asignatura": "Incertidumbre, Riesgo y Disrupción Organizacional", "profesor": "Jorge Selim Tabja Salgado", "fecha": "2027-04-13", "hi": "18:30", "dur": 2.5, "hf": "21:00", "programa": "Maestría en Comunicación Estratégica", "sem": 2, "sesion": "Remoto", "salon": "Teams", "tipo": "Maestría", "corto": "MCE"}, {"asignatura": "Diseño, medición e impacto de la comunicación Grupo 1", "profesor": "Por confirmar", "fecha": "2027-03-02", "hi": "19:00", "dur": 2.0, "hf": "21:00", "programa": "Maestría en Comunicación Estratégica", "sem": 2, "sesion": "Remoto", "salon": "Teams", "tipo": "Maestría", "corto": "MCE"}, {"asignatura": "Diseño, medición e impacto de la comunicación Grupo 2", "profesor": "Por confirmar", "fecha": "2027-03-03", "hi": "19:00", "dur": 2.0, "hf": "21:00", "programa": "Maestría en Comunicación Estratégica", "sem": 2, "sesion": "Remoto", "salon": "Teams", "tipo": "Maestría", "corto": "MCE"}, {"asignatura": "Incertidumbre, Riesgo y Disrupción Organizacional", "profesor": "Jorge Selim Tabja Salgado", "fecha": "2027-04-15", "hi": "18:30", "dur": 2.5, "hf": "21:00", "programa": "Maestría en Comunicación Estratégica", "sem": 2, "sesion": "Remoto", "salon": "Teams", "tipo": "Maestría", "corto": "MCE"}, {"asignatura": "Pensamiento crítico - Grupo 2", "profesor": "Maritza Ceballos Saavedra", "fecha": "2027-01-29", "hi": "18:00", "dur": 2.0, "hf": "20:00", "programa": "Maestría en Comunicación Estratégica", "sem": 2, "sesion": "Remoto", "salon": "Teams", "tipo": "Maestría", "corto": "MCE"}, {"asignatura": "Incertidumbre, Riesgo y Disrupción Organizacional", "profesor": "Jorge Selim Tabja Salgado", "fecha": "2027-04-20", "hi": "18:30", "dur": 2.5, "hf": "21:00", "programa": "Maestría en Comunicación Estratégica", "sem": 2, "sesion": "Remoto", "salon": "Teams", "tipo": "Maestría", "corto": "MCE"}, {"asignatura": "Incertidumbre, Riesgo y Disrupción Organizacional", "profesor": "Jorge Selim Tabja Salgado", "fecha": "2027-04-22", "hi": "18:30", "dur": 2.5, "hf": "21:00", "programa": "Maestría en Comunicación Estratégica", "sem": 2, "sesion": "Remoto", "salon": "Teams", "tipo": "Maestría", "corto": "MCE"}, {"asignatura": "Incertidumbre, Riesgo y Disrupción Organizacional", "profesor": "Jorge Selim Tabja Salgado", "fecha": "2027-04-27", "hi": "18:30", "dur": 2.5, "hf": "21:00", "programa": "Maestría en Comunicación Estratégica", "sem": 2, "sesion": "Remoto", "salon": "Teams", "tipo": "Maestría", "corto": "MCE"}, {"asignatura": "Diseño, medición e impacto de la comunicación Grupo 1", "profesor": "Por confirmar", "fecha": "2027-03-16", "hi": "19:00", "dur": 2.0, "hf": "21:00", "programa": "Maestría en Comunicación Estratégica", "sem": 2, "sesion": "Remoto", "salon": "Teams", "tipo": "Maestría", "corto": "MCE"}, {"asignatura": "Diseño, medición e impacto de la comunicación Grupo 2", "profesor": "Por confirmar", "fecha": "2027-03-17", "hi": "19:00", "dur": 2.0, "hf": "21:00", "programa": "Maestría en Comunicación Estratégica", "sem": 2, "sesion": "Remoto", "salon": "Teams", "tipo": "Maestría", "corto": "MCE"}, {"asignatura": "Incertidumbre, Riesgo y Disrupción Organizacional", "profesor": "Jorge Selim Tabja Salgado", "fecha": "2027-04-29", "hi": "18:30", "dur": 2.5, "hf": "21:00", "programa": "Maestría en Comunicación Estratégica", "sem": 2, "sesion": "Remoto", "salon": "Teams", "tipo": "Maestría", "corto": "MCE"}, {"asignatura": "Estrategia Organizacional", "profesor": "Ledy Paola Armirola Garcés", "fecha": "2027-03-05", "hi": "18:00", "dur": 2.0, "hf": "20:00", "programa": "Maestría en Comunicación Estratégica", "sem": 1, "sesion": "Remoto", "salon": "Teams", "tipo": "Maestría", "corto": "MCE"}, {"asignatura": "Estrategia Organizacional", "profesor": "Ledy Paola Armirola Garcés", "fecha": "2027-03-19", "hi": "18:00", "dur": 2.0, "hf": "20:00", "programa": "Maestría en Comunicación Estratégica", "sem": 1, "sesion": "Remoto", "salon": "Teams", "tipo": "Maestría", "corto": "MCE"}, {"asignatura": "Estrategia Organizacional", "profesor": "Ledy Paola Armirola Garcés", "fecha": "2027-04-16", "hi": "18:00", "dur": 2.0, "hf": "20:00", "programa": "Maestría en Comunicación Estratégica", "sem": 1, "sesion": "Remoto", "salon": "Teams", "tipo": "Maestría", "corto": "MCE"}, {"asignatura": "Estrategia Organizacional", "profesor": "Ledy Paola Armirola Garcés", "fecha": "2027-05-07", "hi": "18:00", "dur": 2.0, "hf": "20:00", "programa": "Maestría en Comunicación Estratégica", "sem": 1, "sesion": "Remoto", "salon": "Teams", "tipo": "Maestría", "corto": "MCE"}, {"asignatura": "Estrategias de Comunicación de Marketing", "profesor": "Javier Andrés Mayorga Gordillo", "fecha": "2027-05-18", "hi": "19:00", "dur": 2.0, "hf": "21:00", "programa": "Maestría en Comunicación Estratégica", "sem": 1, "sesion": "Remoto", "salon": "Teams", "tipo": "Maestría", "corto": "MCE"}, {"asignatura": "Estrategias de Comunicación de Marketing", "profesor": "Javier Andrés Mayorga Gordillo", "fecha": "2027-05-20", "hi": "19:00", "dur": 2.0, "hf": "21:00", "programa": "Maestría en Comunicación Estratégica", "sem": 1, "sesion": "Remoto", "salon": "Teams", "tipo": "Maestría", "corto": "MCE"}, {"asignatura": "Estrategias de Comunicación de Marketing", "profesor": "Javier Andrés Mayorga Gordillo", "fecha": "2027-06-01", "hi": "19:00", "dur": 2.0, "hf": "21:00", "programa": "Maestría en Comunicación Estratégica", "sem": 1, "sesion": "Remoto", "salon": "Teams", "tipo": "Maestría", "corto": "MCE"}, {"asignatura": "Estrategias de Comunicación de Marketing", "profesor": "Javier Andrés Mayorga Gordillo", "fecha": "2027-06-03", "hi": "19:00", "dur": 2.0, "hf": "21:00", "programa": "Maestría en Comunicación Estratégica", "sem": 1, "sesion": "Remoto", "salon": "Teams", "tipo": "Maestría", "corto": "MCE"}, {"asignatura": "Estrategias de Comunicación de Marketing", "profesor": "Javier Andrés Mayorga Gordillo", "fecha": "2027-06-08", "hi": "19:00", "dur": 2.0, "hf": "21:00", "programa": "Maestría en Comunicación Estratégica", "sem": 1, "sesion": "Remoto", "salon": "Teams", "tipo": "Maestría", "corto": "MCE"}, {"asignatura": "Estrategias de Comunicación de Marketing", "profesor": "Javier Andrés Mayorga Gordillo", "fecha": "2027-06-10", "hi": "19:00", "dur": 2.0, "hf": "21:00", "programa": "Maestría en Comunicación Estratégica", "sem": 1, "sesion": "Remoto", "salon": "Teams", "tipo": "Maestría", "corto": "MCE"}, {"asignatura": "Estrategias de Comunicación de Marketing", "profesor": "Javier Andrés Mayorga Gordillo", "fecha": "2027-06-19", "hi": "08:00", "dur": 4.0, "hf": "12:00", "programa": "Maestría en Comunicación Estratégica", "sem": 1, "sesion": "Presencial", "salon": "Por definir", "tipo": "Maestría", "corto": "MCE"}, {"asignatura": "Estrategias de Comunicación de Marketing", "profesor": "Javier Andrés Mayorga Gordillo", "fecha": "2027-06-19", "hi": "13:00", "dur": 4.0, "hf": "17:00", "programa": "Maestría en Comunicación Estratégica", "sem": 1, "sesion": "Presencial", "salon": "Por definir", "tipo": "Maestría", "corto": "MCE"}, {"asignatura": "Gestión de la confianza y engagement", "profesor": "Carlos Rodríguez Pérez", "fecha": "2027-03-02", "hi": "19:00", "dur": 2.0, "hf": "21:00", "programa": "Maestría en Comunicación Estratégica", "sem": 3, "sesion": "Remoto", "salon": "Teams", "tipo": "Maestría", "corto": "MCE"}, {"asignatura": "Gestión de la confianza y engagement", "profesor": "Carlos Rodríguez Pérez", "fecha": "2027-03-09", "hi": "19:00", "dur": 2.0, "hf": "21:00", "programa": "Maestría en Comunicación Estratégica", "sem": 3, "sesion": "Remoto", "salon": "Teams", "tipo": "Maestría", "corto": "MCE"}, {"asignatura": "Gestión de la confianza y engagement", "profesor": "Carlos Rodríguez Pérez", "fecha": "2027-03-16", "hi": "19:00", "dur": 2.0, "hf": "21:00", "programa": "Maestría en Comunicación Estratégica", "sem": 3, "sesion": "Remoto", "salon": "Teams", "tipo": "Maestría", "corto": "MCE"}, {"asignatura": "Gestión de la confianza y engagement", "profesor": "Carlos Rodríguez Pérez", "fecha": "2027-03-30", "hi": "19:00", "dur": 2.0, "hf": "21:00", "programa": "Maestría en Comunicación Estratégica", "sem": 3, "sesion": "Remoto", "salon": "Teams", "tipo": "Maestría", "corto": "MCE"}, {"asignatura": "Gestión de la confianza y engagement", "profesor": "Carlos Rodríguez Pérez", "fecha": "2027-04-06", "hi": "19:00", "dur": 2.0, "hf": "21:00", "programa": "Maestría en Comunicación Estratégica", "sem": 3, "sesion": "Remoto", "salon": "Teams", "tipo": "Maestría", "corto": "MCE"}, {"asignatura": "Gestión de la confianza y engagement", "profesor": "Carlos Rodríguez Pérez", "fecha": "2027-04-09", "hi": "15:00", "dur": 4.0, "hf": "19:00", "programa": "Maestría en Comunicación Estratégica", "sem": 3, "sesion": "Presencial", "salon": "Por definir", "tipo": "Maestría", "corto": "MCE"}, {"asignatura": "Gestión de la confianza y engagement", "profesor": "Carlos Rodríguez Pérez", "fecha": "2027-04-10", "hi": "08:00", "dur": 4.0, "hf": "12:00", "programa": "Maestría en Comunicación Estratégica", "sem": 3, "sesion": "Presencial", "salon": "Por definir", "tipo": "Maestría", "corto": "MCE"}, {"asignatura": "Gestión de la confianza y engagement", "profesor": "Carlos Rodríguez Pérez", "fecha": "2027-04-10", "hi": "13:00", "dur": 4.0, "hf": "17:00", "programa": "Maestría en Comunicación Estratégica", "sem": 3, "sesion": "Presencial", "salon": "Por definir", "tipo": "Maestría", "corto": "MCE"}, {"asignatura": "Pensamiento crítico - Grupo 2", "profesor": "Maritza Ceballos Saavedra", "fecha": "2027-02-12", "hi": "18:00", "dur": 2.0, "hf": "20:00", "programa": "Maestría en Comunicación Estratégica", "sem": 2, "sesion": "Remoto", "salon": "Teams", "tipo": "Maestría", "corto": "MCE"}, {"asignatura": "Incertidumbre, Riesgo y Disrupción Organizacional", "profesor": "Jorge Selim Tabja Salgado", "fecha": "2027-05-04", "hi": "18:30", "dur": 2.5, "hf": "21:00", "programa": "Maestría en Comunicación Estratégica", "sem": 2, "sesion": "Remoto", "salon": "Teams", "tipo": "Maestría", "corto": "MCE"}, {"asignatura": "Diseño, medición e impacto de la comunicación Grupo 1", "profesor": "Por confirmar", "fecha": "2027-04-06", "hi": "19:00", "dur": 2.0, "hf": "21:00", "programa": "Maestría en Comunicación Estratégica", "sem": 2, "sesion": "Remoto", "salon": "Teams", "tipo": "Maestría", "corto": "MCE"}, {"asignatura": "Diseño, medición e impacto de la comunicación Grupo 2", "profesor": "Por confirmar", "fecha": "2027-04-07", "hi": "19:00", "dur": 2.0, "hf": "21:00", "programa": "Maestría en Comunicación Estratégica", "sem": 2, "sesion": "Remoto", "salon": "Teams", "tipo": "Maestría", "corto": "MCE"}, {"asignatura": "Incertidumbre, Riesgo y Disrupción Organizacional", "profesor": "Jorge Selim Tabja Salgado", "fecha": "2027-05-06", "hi": "18:30", "dur": 2.5, "hf": "21:00", "programa": "Maestría en Comunicación Estratégica", "sem": 2, "sesion": "Remoto", "salon": "Teams", "tipo": "Maestría", "corto": "MCE"}, {"asignatura": "Diseño, medición e impacto de la comunicación Grupo 1 y 2", "profesor": "Por confirmar", "fecha": "2027-04-09", "hi": "15:00", "dur": 4.0, "hf": "19:00", "programa": "Maestría en Comunicación Estratégica", "sem": 2, "sesion": "Presencial", "salon": "Por definir", "tipo": "Maestría", "corto": "MCE"}, {"asignatura": "Pensamiento crítico - Grupo 2", "profesor": "Maritza Ceballos Saavedra", "fecha": "2027-02-26", "hi": "18:00", "dur": 2.0, "hf": "20:00", "programa": "Maestría en Comunicación Estratégica", "sem": 2, "sesion": "Remoto", "salon": "Teams", "tipo": "Maestría", "corto": "MCE"}, {"asignatura": "Diseño, medición e impacto de la comunicación Grupo 1 y 2", "profesor": "Por confirmar", "fecha": "2027-04-10", "hi": "08:00", "dur": 4.0, "hf": "12:00", "programa": "Maestría en Comunicación Estratégica", "sem": 2, "sesion": "Presencial", "salon": "Por definir", "tipo": "Maestría", "corto": "MCE"}, {"asignatura": "Diseño, medición e impacto de la comunicación Grupo 1 y 2", "profesor": "Por confirmar", "fecha": "2027-04-10", "hi": "13:00", "dur": 4.0, "hf": "17:00", "programa": "Maestría en Comunicación Estratégica", "sem": 2, "sesion": "Presencial", "salon": "Por definir", "tipo": "Maestría", "corto": "MCE"}, {"asignatura": "Diseño, medición e impacto de la comunicación Grupo 1", "profesor": "Por confirmar", "fecha": "2027-04-20", "hi": "19:00", "dur": 2.0, "hf": "21:00", "programa": "Maestría en Comunicación Estratégica", "sem": 2, "sesion": "Remoto", "salon": "Teams", "tipo": "Maestría", "corto": "MCE"}, {"asignatura": "Diseño, medición e impacto de la comunicación Grupo 2", "profesor": "Por confirmar", "fecha": "2027-04-21", "hi": "19:00", "dur": 2.0, "hf": "21:00", "programa": "Maestría en Comunicación Estratégica", "sem": 2, "sesion": "Remoto", "salon": "Teams", "tipo": "Maestría", "corto": "MCE"}, {"asignatura": "Pensamiento crítico - Grupo 2", "profesor": "Maritza Ceballos Saavedra", "fecha": "2027-03-19", "hi": "18:00", "dur": 2.0, "hf": "20:00", "programa": "Maestría en Comunicación Estratégica", "sem": 2, "sesion": "Remoto", "salon": "Teams", "tipo": "Maestría", "corto": "MCE"}, {"asignatura": "Pensamiento crítico - Grupo 2", "profesor": "Maritza Ceballos Saavedra", "fecha": "2027-04-09", "hi": "18:00", "dur": 2.0, "hf": "20:00", "programa": "Maestría en Comunicación Estratégica", "sem": 2, "sesion": "Remoto", "salon": "Teams", "tipo": "Maestría", "corto": "MCE"}, {"asignatura": "Innovación y Emprendimiento en Consultoría de comunicación", "profesor": "Lesly Rojas", "fecha": "2027-05-18", "hi": "19:00", "dur": 2.0, "hf": "21:00", "programa": "Maestría en Comunicación Estratégica", "sem": 2, "sesion": "Remoto", "salon": "Teams", "tipo": "Maestría", "corto": "MCE"}, {"asignatura": "Innovación y Emprendimiento en Consultoría de comunicación", "profesor": "Lesly Rojas", "fecha": "2027-05-20", "hi": "19:00", "dur": 2.0, "hf": "21:00", "programa": "Maestría en Comunicación Estratégica", "sem": 2, "sesion": "Remoto", "salon": "Teams", "tipo": "Maestría", "corto": "MCE"}, {"asignatura": "Innovación y Emprendimiento en Consultoría de comunicación", "profesor": "Lesly Rojas", "fecha": "2027-05-25", "hi": "19:00", "dur": 2.0, "hf": "21:00", "programa": "Maestría en Comunicación Estratégica", "sem": 2, "sesion": "Remoto", "salon": "Teams", "tipo": "Maestría", "corto": "MCE"}, {"asignatura": "Innovación y Emprendimiento en Consultoría de comunicación", "profesor": "Lesly Rojas", "fecha": "2027-05-27", "hi": "19:00", "dur": 2.0, "hf": "21:00", "programa": "Maestría en Comunicación Estratégica", "sem": 2, "sesion": "Remoto", "salon": "Teams", "tipo": "Maestría", "corto": "MCE"}, {"asignatura": "Metodologías de creatividad e innovación Grupo 4", "profesor": "Erick Alfonso Vilaró Barón", "fecha": "2027-04-17", "hi": "08:00", "dur": 3.0, "hf": "11:00", "programa": "Maestría en Comunicación Estratégica", "sem": 1, "sesion": "Remoto", "salon": "Teams", "tipo": "Maestría", "corto": "MCE"}, {"asignatura": "Metodologías de creatividad e innovación Grupo 4", "profesor": "Erick Alfonso Vilaró Barón", "fecha": "2027-04-24", "hi": "08:00", "dur": 3.0, "hf": "11:00", "programa": "Maestría en Comunicación Estratégica", "sem": 1, "sesion": "Remoto", "salon": "Teams", "tipo": "Maestría", "corto": "MCE"}, {"asignatura": "Metodologías de creatividad e innovación Grupo 4", "profesor": "Erick Alfonso Vilaró Barón", "fecha": "2027-05-08", "hi": "08:00", "dur": 3.0, "hf": "11:00", "programa": "Maestría en Comunicación Estratégica", "sem": 1, "sesion": "Remoto", "salon": "Teams", "tipo": "Maestría", "corto": "MCE"}, {"asignatura": "Metodologías de creatividad e innovación Grupo 4", "profesor": "Erick Alfonso Vilaró Barón", "fecha": "2027-05-22", "hi": "08:00", "dur": 3.0, "hf": "11:00", "programa": "Maestría en Comunicación Estratégica", "sem": 1, "sesion": "Remoto", "salon": "Teams", "tipo": "Maestría", "corto": "MCE"}, {"asignatura": "Metodologías de creatividad e innovación Grupo 4", "profesor": "Erick Alfonso Vilaró Barón", "fecha": "2027-05-15", "hi": "08:00", "dur": 4.0, "hf": "12:00", "programa": "Maestría en Comunicación Estratégica", "sem": 1, "sesion": "Presencial", "salon": "Por definir", "tipo": "Maestría", "corto": "MCE"}, {"asignatura": "Metodologías de creatividad e innovación Grupo 4", "profesor": "Erick Alfonso Vilaró Barón", "fecha": "2027-05-15", "hi": "13:00", "dur": 4.0, "hf": "17:00", "programa": "Maestría en Comunicación Estratégica", "sem": 1, "sesion": "Presencial", "salon": "Por definir", "tipo": "Maestría", "corto": "MCE"}, {"asignatura": "Innovación y Emprendimiento en Consultoría de comunicación", "profesor": "Lesly Rojas", "fecha": "2027-06-01", "hi": "19:00", "dur": 2.0, "hf": "21:00", "programa": "Maestría en Comunicación Estratégica", "sem": 2, "sesion": "Remoto", "salon": "Teams", "tipo": "Maestría", "corto": "MCE"}, {"asignatura": "Innovación y Emprendimiento en Consultoría de comunicación", "profesor": "Lesly Rojas", "fecha": "2027-06-03", "hi": "19:00", "dur": 2.0, "hf": "21:00", "programa": "Maestría en Comunicación Estratégica", "sem": 2, "sesion": "Remoto", "salon": "Teams", "tipo": "Maestría", "corto": "MCE"}, {"asignatura": "Innovación y Emprendimiento en Consultoría de comunicación", "profesor": "Lesly Rojas", "fecha": "2027-06-08", "hi": "19:00", "dur": 2.0, "hf": "21:00", "programa": "Maestría en Comunicación Estratégica", "sem": 2, "sesion": "Remoto", "salon": "Teams", "tipo": "Maestría", "corto": "MCE"}, {"asignatura": "Innovación y Emprendimiento en Consultoría de comunicación", "profesor": "Lesly Rojas", "fecha": "2027-06-10", "hi": "19:00", "dur": 2.0, "hf": "21:00", "programa": "Maestría en Comunicación Estratégica", "sem": 2, "sesion": "Remoto", "salon": "Teams", "tipo": "Maestría", "corto": "MCE"}, {"asignatura": "Innovación y Emprendimiento en Consultoría de comunicación", "profesor": "Lesly Rojas", "fecha": "2027-06-15", "hi": "19:00", "dur": 2.0, "hf": "21:00", "programa": "Maestría en Comunicación Estratégica", "sem": 2, "sesion": "Remoto", "salon": "Teams", "tipo": "Maestría", "corto": "MCE"}, {"asignatura": "Pensamiento estratégico", "profesor": "Eliana Del Rosario Herrera Huérfano", "fecha": "2027-02-02", "hi": "19:00", "dur": 2.0, "hf": "21:00", "programa": "Maestría en Comunicación Estratégica", "sem": 1, "sesion": "Remoto", "salon": "Teams", "tipo": "Maestría", "corto": "MCE"}, {"asignatura": "Pensamiento estratégico", "profesor": "Eliana Del Rosario Herrera Huérfano", "fecha": "2027-02-09", "hi": "19:00", "dur": 2.0, "hf": "21:00", "programa": "Maestría en Comunicación Estratégica", "sem": 1, "sesion": "Remoto", "salon": "Teams", "tipo": "Maestría", "corto": "MCE"}, {"asignatura": "Pensamiento estratégico", "profesor": "Eliana Del Rosario Herrera Huérfano", "fecha": "2027-02-16", "hi": "19:00", "dur": 2.0, "hf": "21:00", "programa": "Maestría en Comunicación Estratégica", "sem": 1, "sesion": "Remoto", "salon": "Teams", "tipo": "Maestría", "corto": "MCE"}, {"asignatura": "Pensamiento estratégico", "profesor": "Eliana Del Rosario Herrera Huérfano", "fecha": "2027-02-23", "hi": "19:00", "dur": 2.0, "hf": "21:00", "programa": "Maestría en Comunicación Estratégica", "sem": 1, "sesion": "Remoto", "salon": "Teams", "tipo": "Maestría", "corto": "MCE"}, {"asignatura": "Pensamiento estratégico", "profesor": "Eliana Del Rosario Herrera Huérfano", "fecha": "2027-03-02", "hi": "19:00", "dur": 2.0, "hf": "21:00", "programa": "Maestría en Comunicación Estratégica", "sem": 1, "sesion": "Remoto", "salon": "Teams", "tipo": "Maestría", "corto": "MCE"}, {"asignatura": "Pensamiento estratégico", "profesor": "Eliana Del Rosario Herrera Huérfano", "fecha": "2027-03-09", "hi": "19:00", "dur": 2.0, "hf": "21:00", "programa": "Maestría en Comunicación Estratégica", "sem": 1, "sesion": "Remoto", "salon": "Teams", "tipo": "Maestría", "corto": "MCE"}, {"asignatura": "Pensamiento estratégico", "profesor": "Eliana Del Rosario Herrera Huérfano", "fecha": "2027-03-16", "hi": "19:00", "dur": 2.0, "hf": "21:00", "programa": "Maestría en Comunicación Estratégica", "sem": 1, "sesion": "Remoto", "salon": "Teams", "tipo": "Maestría", "corto": "MCE"}, {"asignatura": "Pensamiento estratégico", "profesor": "Eliana Del Rosario Herrera Huérfano", "fecha": "2027-03-30", "hi": "19:00", "dur": 2.0, "hf": "21:00", "programa": "Maestría en Comunicación Estratégica", "sem": 1, "sesion": "Remoto", "salon": "Teams", "tipo": "Maestría", "corto": "MCE"}, {"asignatura": "Pensamiento estratégico", "profesor": "Eliana Del Rosario Herrera Huérfano", "fecha": "2027-04-06", "hi": "19:00", "dur": 2.0, "hf": "21:00", "programa": "Maestría en Comunicación Estratégica", "sem": 1, "sesion": "Remoto", "salon": "Teams", "tipo": "Maestría", "corto": "MCE"}, {"asignatura": "Pensamiento estratégico", "profesor": "Eliana Del Rosario Herrera Huérfano", "fecha": "2027-04-20", "hi": "19:00", "dur": 2.0, "hf": "21:00", "programa": "Maestría en Comunicación Estratégica", "sem": 1, "sesion": "Remoto", "salon": "Teams", "tipo": "Maestría", "corto": "MCE"}, {"asignatura": "Pensamiento estratégico", "profesor": "Eliana Del Rosario Herrera Huérfano", "fecha": "2027-04-27", "hi": "19:00", "dur": 2.0, "hf": "21:00", "programa": "Maestría en Comunicación Estratégica", "sem": 1, "sesion": "Remoto", "salon": "Teams", "tipo": "Maestría", "corto": "MCE"}, {"asignatura": "Pensamiento estratégico", "profesor": "Eliana Del Rosario Herrera Huérfano", "fecha": "2027-05-04", "hi": "19:00", "dur": 2.0, "hf": "21:00", "programa": "Maestría en Comunicación Estratégica", "sem": 1, "sesion": "Remoto", "salon": "Teams", "tipo": "Maestría", "corto": "MCE"}, {"asignatura": "Pensamiento estratégico", "profesor": "Eliana Del Rosario Herrera Huérfano", "fecha": "2027-05-11", "hi": "19:00", "dur": 2.0, "hf": "21:00", "programa": "Maestría en Comunicación Estratégica", "sem": 1, "sesion": "Remoto", "salon": "Teams", "tipo": "Maestría", "corto": "MCE"}, {"asignatura": "Project managment", "profesor": "Andrés Felipe Ortiz Zamora", "fecha": "2027-01-25", "hi": "19:00", "dur": 2.0, "hf": "21:00", "programa": "Maestría en Comunicación Estratégica", "sem": 3, "sesion": "Remoto", "salon": "Teams", "tipo": "Maestría", "corto": "MCE"}, {"asignatura": "Project managment", "profesor": "Andrés Felipe Ortiz Zamora", "fecha": "2027-01-27", "hi": "19:00", "dur": 2.0, "hf": "21:00", "programa": "Maestría en Comunicación Estratégica", "sem": 3, "sesion": "Remoto", "salon": "Teams", "tipo": "Maestría", "corto": "MCE"}, {"asignatura": "Project managment", "profesor": "Andrés Felipe Ortiz Zamora", "fecha": "2027-02-01", "hi": "19:00", "dur": 2.0, "hf": "21:00", "programa": "Maestría en Comunicación Estratégica", "sem": 3, "sesion": "Remoto", "salon": "Teams", "tipo": "Maestría", "corto": "MCE"}, {"asignatura": "Project managment", "profesor": "Andrés Felipe Ortiz Zamora", "fecha": "2027-02-03", "hi": "19:00", "dur": 2.0, "hf": "21:00", "programa": "Maestría en Comunicación Estratégica", "sem": 3, "sesion": "Remoto", "salon": "Teams", "tipo": "Maestría", "corto": "MCE"}, {"asignatura": "Project managment", "profesor": "Andrés Felipe Ortiz Zamora", "fecha": "2027-02-08", "hi": "19:00", "dur": 2.0, "hf": "21:00", "programa": "Maestría en Comunicación Estratégica", "sem": 3, "sesion": "Remoto", "salon": "Teams", "tipo": "Maestría", "corto": "MCE"}, {"asignatura": "Project managment", "profesor": "Andrés Felipe Ortiz Zamora", "fecha": "2027-02-10", "hi": "19:00", "dur": 2.0, "hf": "21:00", "programa": "Maestría en Comunicación Estratégica", "sem": 3, "sesion": "Remoto", "salon": "Teams", "tipo": "Maestría", "corto": "MCE"}, {"asignatura": "Project managment", "profesor": "William Fernando Mojica Rondón", "fecha": "2027-02-15", "hi": "19:00", "dur": 2.0, "hf": "21:00", "programa": "Maestría en Comunicación Estratégica", "sem": 3, "sesion": "Remoto", "salon": "Teams", "tipo": "Maestría", "corto": "MCE"}, {"asignatura": "Project managment", "profesor": "William Fernando Mojica Rondón", "fecha": "2027-02-17", "hi": "19:00", "dur": 2.0, "hf": "21:00", "programa": "Maestría en Comunicación Estratégica", "sem": 3, "sesion": "Remoto", "salon": "Teams", "tipo": "Maestría", "corto": "MCE"}, {"asignatura": "Project managment", "profesor": "William Fernando Mojica Rondón", "fecha": "2027-02-22", "hi": "19:00", "dur": 2.0, "hf": "21:00", "programa": "Maestría en Comunicación Estratégica", "sem": 3, "sesion": "Remoto", "salon": "Teams", "tipo": "Maestría", "corto": "MCE"}, {"asignatura": "Project managment", "profesor": "Andrés Felipe Ortiz Zamora", "fecha": "2027-02-27", "hi": "08:00", "dur": 4.0, "hf": "12:00", "programa": "Maestría en Comunicación Estratégica", "sem": 3, "sesion": "Presencial", "salon": "Por definir", "tipo": "Maestría", "corto": "MCE"}, {"asignatura": "Project managment", "profesor": "William Fernando Mojica Rondón", "fecha": "2027-02-27", "hi": "13:00", "dur": 4.0, "hf": "17:00", "programa": "Maestría en Comunicación Estratégica", "sem": 3, "sesion": "Presencial", "salon": "Por definir", "tipo": "Maestría", "corto": "MCE"}, {"asignatura": "Proyecto de comunicación estratégica- Grupo 1", "profesor": "Olga Beatriz Gutiérrez Tobar", "fecha": "2027-04-14", "hi": "19:00", "dur": 2.0, "hf": "21:00", "programa": "Maestría en Comunicación Estratégica", "sem": 3, "sesion": "Remoto", "salon": "Teams", "tipo": "Maestría", "corto": "MCE"}, {"asignatura": "Proyecto de comunicación estratégica- Grupo 1", "profesor": "Olga Beatriz Gutiérrez Tobar", "fecha": "2027-04-21", "hi": "19:00", "dur": 2.0, "hf": "21:00", "programa": "Maestría en Comunicación Estratégica", "sem": 3, "sesion": "Remoto", "salon": "Teams", "tipo": "Maestría", "corto": "MCE"}, {"asignatura": "Proyecto de comunicación estratégica- Grupo 1", "profesor": "Olga Beatriz Gutiérrez Tobar", "fecha": "2027-04-28", "hi": "19:00", "dur": 2.0, "hf": "21:00", "programa": "Maestría en Comunicación Estratégica", "sem": 3, "sesion": "Remoto", "salon": "Teams", "tipo": "Maestría", "corto": "MCE"}, {"asignatura": "Proyecto de comunicación estratégica- Grupo 1", "profesor": "Olga Beatriz Gutiérrez Tobar", "fecha": "2027-05-05", "hi": "19:00", "dur": 2.0, "hf": "21:00", "programa": "Maestría en Comunicación Estratégica", "sem": 3, "sesion": "Remoto", "salon": "Teams", "tipo": "Maestría", "corto": "MCE"}, {"asignatura": "Proyecto de comunicación estratégica- Grupo 1", "profesor": "Olga Beatriz Gutiérrez Tobar", "fecha": "2027-05-12", "hi": "19:00", "dur": 2.0, "hf": "21:00", "programa": "Maestría en Comunicación Estratégica", "sem": 3, "sesion": "Remoto", "salon": "Teams", "tipo": "Maestría", "corto": "MCE"}, {"asignatura": "Proyecto de comunicación estratégica- Grupo 1", "profesor": "Olga Beatriz Gutiérrez Tobar", "fecha": "2027-05-19", "hi": "19:00", "dur": 2.0, "hf": "21:00", "programa": "Maestría en Comunicación Estratégica", "sem": 3, "sesion": "Remoto", "salon": "Teams", "tipo": "Maestría", "corto": "MCE"}, {"asignatura": "Proyecto de comunicación estratégica- Grupo 1", "profesor": "Olga Beatriz Gutiérrez Tobar", "fecha": "2027-06-18", "hi": "15:00", "dur": 4.0, "hf": "19:00", "programa": "Maestría en Comunicación Estratégica", "sem": 3, "sesion": "Presencial", "salon": "Por definir", "tipo": "Maestría", "corto": "MCE"}, {"asignatura": "Proyecto de comunicación estratégica- Grupo 1", "profesor": "Olga Beatriz Gutiérrez Tobar", "fecha": "2027-06-19", "hi": "08:00", "dur": 4.0, "hf": "12:00", "programa": "Maestría en Comunicación Estratégica", "sem": 3, "sesion": "Presencial", "salon": "Por definir", "tipo": "Maestría", "corto": "MCE"}, {"asignatura": "Proyecto de comunicación estratégica- Grupo 1", "profesor": "Olga Beatriz Gutiérrez Tobar", "fecha": "2027-06-19", "hi": "13:00", "dur": 4.0, "hf": "17:00", "programa": "Maestría en Comunicación Estratégica", "sem": 3, "sesion": "Presencial", "salon": "Por definir", "tipo": "Maestría", "corto": "MCE"}, {"asignatura": "Proyecto de comunicación estratégica- Grupo 2", "profesor": "Olga Beatriz Gutiérrez Tobar", "fecha": "2027-04-15", "hi": "19:00", "dur": 2.0, "hf": "21:00", "programa": "Maestría en Comunicación Estratégica", "sem": 3, "sesion": "Remoto", "salon": "Teams", "tipo": "Maestría", "corto": "MCE"}, {"asignatura": "Proyecto de comunicación estratégica- Grupo 2", "profesor": "Olga Beatriz Gutiérrez Tobar", "fecha": "2027-04-22", "hi": "19:00", "dur": 2.0, "hf": "21:00", "programa": "Maestría en Comunicación Estratégica", "sem": 3, "sesion": "Remoto", "salon": "Teams", "tipo": "Maestría", "corto": "MCE"}, {"asignatura": "Proyecto de comunicación estratégica- Grupo 2", "profesor": "Olga Beatriz Gutiérrez Tobar", "fecha": "2027-04-29", "hi": "19:00", "dur": 2.0, "hf": "21:00", "programa": "Maestría en Comunicación Estratégica", "sem": 3, "sesion": "Remoto", "salon": "Teams", "tipo": "Maestría", "corto": "MCE"}, {"asignatura": "Proyecto de comunicación estratégica- Grupo 2", "profesor": "Olga Beatriz Gutiérrez Tobar", "fecha": "2027-05-06", "hi": "19:00", "dur": 2.0, "hf": "21:00", "programa": "Maestría en Comunicación Estratégica", "sem": 3, "sesion": "Remoto", "salon": "Teams", "tipo": "Maestría", "corto": "MCE"}, {"asignatura": "Proyecto de comunicación estratégica- Grupo 2", "profesor": "Olga Beatriz Gutiérrez Tobar", "fecha": "2027-05-13", "hi": "19:00", "dur": 2.0, "hf": "21:00", "programa": "Maestría en Comunicación Estratégica", "sem": 3, "sesion": "Remoto", "salon": "Teams", "tipo": "Maestría", "corto": "MCE"}, {"asignatura": "Proyecto de comunicación estratégica- Grupo 2", "profesor": "Olga Beatriz Gutiérrez Tobar", "fecha": "2027-05-20", "hi": "19:00", "dur": 2.0, "hf": "21:00", "programa": "Maestría en Comunicación Estratégica", "sem": 3, "sesion": "Remoto", "salon": "Teams", "tipo": "Maestría", "corto": "MCE"}, {"asignatura": "Proyecto de comunicación estratégica- Grupo 2", "profesor": "Olga Beatriz Gutiérrez Tobar", "fecha": "2027-05-14", "hi": "15:00", "dur": 4.0, "hf": "19:00", "programa": "Maestría en Comunicación Estratégica", "sem": 3, "sesion": "Presencial", "salon": "Por definir", "tipo": "Maestría", "corto": "MCE"}, {"asignatura": "Proyecto de comunicación estratégica- Grupo 2", "profesor": "Olga Beatriz Gutiérrez Tobar", "fecha": "2027-05-15", "hi": "08:00", "dur": 4.0, "hf": "12:00", "programa": "Maestría en Comunicación Estratégica", "sem": 3, "sesion": "Presencial", "salon": "Por definir", "tipo": "Maestría", "corto": "MCE"}, {"asignatura": "Proyecto de comunicación estratégica- Grupo 2", "profesor": "Olga Beatriz Gutiérrez Tobar", "fecha": "2027-05-15", "hi": "13:00", "dur": 4.0, "hf": "17:00", "programa": "Maestría en Comunicación Estratégica", "sem": 3, "sesion": "Presencial", "salon": "Por definir", "tipo": "Maestría", "corto": "MCE"}, {"asignatura": "Sostenibilidad y Activismo Organizacional", "profesor": "María Cabrera", "fecha": "2027-04-17", "hi": "08:00", "dur": 2.0, "hf": "10:00", "programa": "Maestría en Comunicación Estratégica", "sem": 2, "sesion": "Remoto", "salon": "Teams", "tipo": "Maestría", "corto": "MCE"}, {"asignatura": "Sostenibilidad y Activismo Organizacional", "profesor": "María Cabrera", "fecha": "2027-05-08", "hi": "08:00", "dur": 2.0, "hf": "10:00", "programa": "Maestría en Comunicación Estratégica", "sem": 2, "sesion": "Remoto", "salon": "Teams", "tipo": "Maestría", "corto": "MCE"}, {"asignatura": "Sostenibilidad y Activismo Organizacional", "profesor": "María Cabrera", "fecha": "2027-05-22", "hi": "08:00", "dur": 2.0, "hf": "10:00", "programa": "Maestría en Comunicación Estratégica", "sem": 2, "sesion": "Remoto", "salon": "Teams", "tipo": "Maestría", "corto": "MCE"}, {"asignatura": "Sostenibilidad y Activismo Organizacional", "profesor": "María Cabrera", "fecha": "2027-06-05", "hi": "08:00", "dur": 2.0, "hf": "10:00", "programa": "Maestría en Comunicación Estratégica", "sem": 2, "sesion": "Remoto", "salon": "Teams", "tipo": "Maestría", "corto": "MCE"}, {"asignatura": "Sostenibilidad y Activismo Organizacional", "profesor": "María Cabrera", "fecha": "2027-06-19", "hi": "08:00", "dur": 2.0, "hf": "10:00", "programa": "Maestría en Comunicación Estratégica", "sem": 2, "sesion": "Remoto", "salon": "Teams", "tipo": "Maestría", "corto": "MCE"}, {"asignatura": "Transformación organizacional", "profesor": "Diana Victoria Vargas Pedraza", "fecha": "2027-03-01", "hi": "19:00", "dur": 2.0, "hf": "21:00", "programa": "Maestría en Comunicación Estratégica", "sem": 3, "sesion": "Remoto", "salon": "Teams", "tipo": "Maestría", "corto": "MCE"}, {"asignatura": "Transformación organizacional", "profesor": "Diana Victoria Vargas Pedraza", "fecha": "2027-03-03", "hi": "19:00", "dur": 2.0, "hf": "21:00", "programa": "Maestría en Comunicación Estratégica", "sem": 3, "sesion": "Remoto", "salon": "Teams", "tipo": "Maestría", "corto": "MCE"}, {"asignatura": "Transformación organizacional", "profesor": "Diana Victoria Vargas Pedraza", "fecha": "2027-03-08", "hi": "19:00", "dur": 2.0, "hf": "21:00", "programa": "Maestría en Comunicación Estratégica", "sem": 3, "sesion": "Remoto", "salon": "Teams", "tipo": "Maestría", "corto": "MCE"}, {"asignatura": "Transformación organizacional", "profesor": "Diana Victoria Vargas Pedraza", "fecha": "2027-03-10", "hi": "19:00", "dur": 2.0, "hf": "21:00", "programa": "Maestría en Comunicación Estratégica", "sem": 3, "sesion": "Remoto", "salon": "Teams", "tipo": "Maestría", "corto": "MCE"}, {"asignatura": "Transformación organizacional", "profesor": "Diana Victoria Vargas Pedraza", "fecha": "2027-03-15", "hi": "19:00", "dur": 2.0, "hf": "21:00", "programa": "Maestría en Comunicación Estratégica", "sem": 3, "sesion": "Remoto", "salon": "Teams", "tipo": "Maestría", "corto": "MCE"}, {"asignatura": "Transformación organizacional", "profesor": "Diana Victoria Vargas Pedraza", "fecha": "2027-03-17", "hi": "19:00", "dur": 2.0, "hf": "21:00", "programa": "Maestría en Comunicación Estratégica", "sem": 3, "sesion": "Remoto", "salon": "Teams", "tipo": "Maestría", "corto": "MCE"}, {"asignatura": "Transformación organizacional", "profesor": "Diana Victoria Vargas Pedraza", "fecha": "2027-03-29", "hi": "19:00", "dur": 2.0, "hf": "21:00", "programa": "Maestría en Comunicación Estratégica", "sem": 3, "sesion": "Remoto", "salon": "Teams", "tipo": "Maestría", "corto": "MCE"}, {"asignatura": "Transformación organizacional", "profesor": "Diana Victoria Vargas Pedraza", "fecha": "2027-03-31", "hi": "19:00", "dur": 2.0, "hf": "21:00", "programa": "Maestría en Comunicación Estratégica", "sem": 3, "sesion": "Remoto", "salon": "Teams", "tipo": "Maestría", "corto": "MCE"}, {"asignatura": "Transformación organizacional", "profesor": "Diana Victoria Vargas Pedraza", "fecha": "2027-04-05", "hi": "19:00", "dur": 2.0, "hf": "21:00", "programa": "Maestría en Comunicación Estratégica", "sem": 3, "sesion": "Remoto", "salon": "Teams", "tipo": "Maestría", "corto": "MCE"}, {"asignatura": "Transformación organizacional", "profesor": "Diana Victoria Vargas Pedraza", "fecha": "2027-04-07", "hi": "19:00", "dur": 2.0, "hf": "21:00", "programa": "Maestría en Comunicación Estratégica", "sem": 3, "sesion": "Remoto", "salon": "Teams", "tipo": "Maestría", "corto": "MCE"}];
+const DAYS_L=['domingo','lunes','martes','miércoles','jueves','viernes','sábado'];
+const DAYS_S=['dom','lun','mar','mié','jue','vie','sáb'];
+const MON_S=['ene','feb','mar','abr','may','jun','jul','ago','sep','oct','nov','dic'];
+const MON_L=['enero','febrero','marzo','abril','mayo','junio','julio','agosto','septiembre','octubre','noviembre','diciembre'];
+const $=s=>document.querySelector(s);
+const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const pad=n=>String(n).padStart(2,'0');
+const iso=d=>`${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}`;
+const pd=s=>{const[y,m,d]=s.split('-').map(Number);return new Date(y,m-1,d)};
+const norm=s=>String(s).normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase();
+const fmtDur=n=>String(n).replace('.',',')+' h';
+const fmtDate=r=>`${r.d.getDate()} ${MON_S[r.d.getMonth()]} ${r.d.getFullYear()}`;
+const fmtLong=d=>`${DAYS_L[d.getDay()]} ${d.getDate()} de ${MON_L[d.getMonth()]} de ${d.getFullYear()}`;
+
+const rows=DATA.map((r,i)=>{const d=pd(r.fecha);return {...r,id:i,d,wd:d.getDay(),month:r.fecha.slice(0,7),salonL:r.salon}});
+rows.forEach(r=>{r.hay=norm([r.asignatura,r.profesor,fmtLong(r.d),fmtDate(r),r.hi,r.hf,fmtDur(r.dur),r.programa,'semestre '+r.sem,r.sesion,r.salonL,r.tipo,r.corto].join(' | '))});
+const allDates=rows.map(r=>r.fecha).sort();
+const MIN=allDates[0], MAX=allDates[allDates.length-1];
+
+/* Definición de facetas, en el orden de las columnas del Excel pensado para lectura de horarios */
+const F=[
+ {k:'asignatura',label:'Asignatura',val:r=>r.asignatura,fmt:v=>v,open:true},
+ {k:'profesor',label:'Profesor',val:r=>r.profesor,fmt:v=>v},
+ {k:'fecha',label:'Fecha',custom:true,open:true},
+ {k:'hi',label:'Hora inicio',val:r=>r.hi,fmt:v=>v,chips:true},
+ {k:'dur',label:'Duración',val:r=>String(r.dur),fmt:v=>fmtDur(v),chips:true,num:true},
+ {k:'hf',label:'Hora final',val:r=>r.hf,fmt:v=>v,chips:true},
+  {k:'sem',label:'Semestre (Sem)',val:r=>String(r.sem),fmt:v=>'Semestre '+v,chips:true,num:true,open:true},
+ {k:'sesion',label:'Sesión',val:r=>r.sesion,fmt:v=>v,chips:true,open:true},
+ {k:'salon',label:'Salón',val:r=>r.salonL,fmt:v=>v,chips:true},
+];
+const state={sel:{},from:'',to:'',months:new Set(),wds:new Set(),q:'',view:'table',sort:'fecha',dir:1,calMonth:null,selDay:null};
+F.filter(f=>!f.custom).forEach(f=>state.sel[f.k]=new Set());
+
+function pass(r,skip){
+  for(const f of F){ if(f.custom||f.k===skip)continue; const s=state.sel[f.k]; if(s.size&&!s.has(f.val(r)))return false; }
+  if(state.from&&r.fecha<state.from)return false;
+  if(state.to&&r.fecha>state.to)return false;
+  if(skip!=='month'&&state.months.size&&!state.months.has(r.month))return false;
+  if(skip!=='wd'&&state.wds.size&&!state.wds.has(r.wd))return false;
+  if(state.q){ for(const t of norm(state.q).split(/\s+/).filter(Boolean)) if(!r.hay.includes(t))return false; }
+  return true;
+}
+
+/* Sidebar */
+const optEls={};
+function uniq(get,num){
+  const m=new Map(); rows.forEach(r=>{const v=get(r); m.set(v,(m.get(v)||0)+1)});
+  return [...m.keys()].sort((a,b)=>num?Number(a)-Number(b):a.localeCompare(b,'es'));
+}
+function optHTML(f,v){
+  const cls=f.chips?'chip':'opt';
+  const inner=f.chips
+    ? `<input type="checkbox" data-f="${f.k}" value="${esc(v)}"><span class="c"><span class="t">${esc(f.fmt(v))}</span><span class="n"></span></span>`
+    : `<input type="checkbox" data-f="${f.k}" value="${esc(v)}"><span class="t">${esc(f.fmt(v))}</span><span class="n"></span>`;
+  return `<label class="${cls}" data-o="${f.k}|${esc(v)}">${inner}</label>`;
+}
+function buildFacets(){
+  const months=[...new Set(rows.map(r=>r.month))].sort();
+  const wds=[...new Set(rows.map(r=>r.wd))].sort((a,b)=>((a+6)%7)-((b+6)%7));
+  let h='';
+  for(const f of F){
+    let body='';
+    if(f.custom){
+      body=`<div class="dates"><label>Desde<input type="date" id="from" min="${MIN}" max="${MAX}"></label><label>Hasta<input type="date" id="to" min="${MIN}" max="${MAX}"></label></div>
+      <div class="sub">Mes</div><div class="chips">${months.map(m=>{const[y,mm]=m.split('-');return `<label class="chip" data-o="month|${m}"><input type="checkbox" data-f="month" value="${m}"><span class="c"><span class="t">${MON_L[+mm-1][0].toUpperCase()+MON_L[+mm-1].slice(1)}</span><span class="n"></span></span></label>`}).join('')}</div>
+      <div class="sub">Día de la semana</div><div class="chips">${wds.map(w=>`<label class="chip" data-o="wd|${w}"><input type="checkbox" data-f="wd" value="${w}"><span class="c"><span class="t">${DAYS_L[w]}</span><span class="n"></span></span></label>`).join('')}</div>`;
+    } else {
+      const vals=uniq(f.val,f.num);
+      const long=!f.chips&&vals.length>8;
+      body=`${long?`<div class="fs"><label class="sr" for="fs-${f.k}">Buscar en ${f.label}</label><input class="fsearch" id="fs-${f.k}" type="search" data-fs="${f.k}" placeholder="Buscar ${f.label.toLowerCase()}…" autocomplete="off"></div>`:''}<div class="${f.chips?'chips':'opts'}${long?' long':''}">${vals.map(v=>optHTML(f,v)).join('')}</div>`;
+    }
+    h+=`<details data-d="${f.k}" ${f.open?'open':''}><summary><span>${f.label}</span><span class="badge" data-b="${f.k}" hidden>0</span></summary>${body}</details>`;
+  }
+  $('#facets').innerHTML=h;
+  document.querySelectorAll('[data-o]').forEach(el=>optEls[el.dataset.o]={el,input:el.querySelector('input'),n:el.querySelector('.n')});
+}
+
+document.addEventListener('input',e=>{
+  const t=e.target; if(!t.matches('[data-fs]'))return;
+  const k=t.dataset.fs, q=norm(t.value.trim());
+  document.querySelectorAll(`[data-o^="${k}|"]`).forEach(el=>{el.style.display=norm(el.textContent).includes(q)?'':'none'});
+});
+/* Utilidades de estado */
+function activeCount(){
+  let n=0; for(const k in state.sel)n+=state.sel[k].size;
+  n+=state.months.size+state.wds.size+(state.from?1:0)+(state.to?1:0)+(state.q?1:0); return n;
+}
+function clearAll(){
+  for(const k in state.sel)state.sel[k].clear();
+  state.months.clear();state.wds.clear();state.from='';state.to='';state.q='';
+  $('#q').value='';$('#from').value='';$('#to').value='';update();
+}
+
+/* Render principal */
+
+/* Selector de semestre destacado (sincronizado con el filtro lateral) */
+function renderSemPick(){
+  const sems=[...new Set(rows.map(r=>r.sem))].sort(), sel=state.sel.sem;
+  document.querySelector('.sempick').style.display=sems.length<2?'none':'';
+  if(sems.length<2)return;
+  const info=s=>{const g=rows.filter(r=>r.sem===s),ds=g.map(r=>r.fecha).sort();
+    const f=x=>{const d=pd(x);return d.getDate()+' '+MON_S[d.getMonth()]};
+    return `${new Set(g.map(r=>r.asignatura)).size} asignaturas, ${g.length} sesiones<br>${f(ds[0])} a ${f(ds[ds.length-1])}`};
+  $('#semgrid').innerHTML=`<button type="button" class="sembtn all" data-semp="all" aria-pressed="${sel.size===0}"><span class="big" aria-hidden="true">★</span><span class="t">Todos</span><span class="m">${sems.length===2?'Los dos semestres':'Los '+sems.length+' semestres'}</span></button>`
+   +sems.map(s=>`<button type="button" class="sembtn sb${s}" data-semp="${s}" aria-pressed="${sel.size===1&&sel.has(String(s))}"><span class="big" aria-hidden="true">${s}</span><span class="t">Semestre ${s}</span><span class="m">${info(s)}</span></button>`).join('');
+}
+document.addEventListener('click',e=>{
+  const b=e.target.closest('[data-semp]'); if(!b)return;
+  const v=b.dataset.semp, s=state.sel.sem, only=s.size===1&&s.has(v);
+  s.clear(); if(v!=='all'&&!only)s.add(v);
+  update();
+  const f=document.querySelector(`#semgrid [data-semp="${v}"]`); if(f)f.focus();
+});
+function update(){
+  const filtered=rows.filter(r=>pass(r,null));
+  renderSemPick();
+  updateFacets(); updateActive(filtered); updateSummary(filtered); renderStrip(filtered);
+  const ac=activeCount(); const fc=$('#fcount'); fc.textContent=ac; fc.hidden=!ac;
+  $('#clear').disabled=!ac;
+  $('#apply').textContent=`Ver ${filtered.length} ${filtered.length===1?'sesión':'sesiones'}`;
+  const res=$('#results');
+  if(state.view==='table') renderTable(res,filtered); else renderCal(res,filtered);
+}
+function updateFacets(){
+  const counts={};
+  for(const f of F){ if(f.custom)continue; const c={}; rows.forEach(r=>{if(pass(r,f.k)){const v=f.val(r);c[v]=(c[v]||0)+1}}); counts[f.k]=c; }
+  const cm={},cw={};
+  rows.forEach(r=>{ if(pass(r,'month'))cm[r.month]=(cm[r.month]||0)+1; if(pass(r,'wd'))cw[r.wd]=(cw[r.wd]||0)+1; });
+  counts.month=cm; counts.wd=cw;
+  for(const key in optEls){
+    const [k,v]=key.split('|'); const o=optEls[key];
+    const c=(counts[k]||{})[v]||0;
+    o.n.textContent=c; o.el.classList.toggle('zero',c===0);
+    const checked= k==='month'?state.months.has(v): k==='wd'?state.wds.has(+v): state.sel[k].has(v);
+    o.input.checked=checked;
+  }
+  for(const f of F){
+    const b=document.querySelector(`[data-b="${f.k}"]`);
+    let n=f.custom?(state.months.size+state.wds.size+(state.from?1:0)+(state.to?1:0)):state.sel[f.k].size;
+    b.hidden=!n; b.textContent=n;
+  }
+}
+function updateActive(filtered){
+  const tags=[];
+  const add=(label,val,fn)=>tags.push({label,val,fn});
+  for(const f of F){ if(f.custom)continue; state.sel[f.k].forEach(v=>add(f.label.replace(' (Sem)',''),f.fmt(v),()=>state.sel[f.k].delete(v))); }
+  state.months.forEach(m=>add('Mes',MON_L[+m.split('-')[1]-1],()=>state.months.delete(m)));
+  state.wds.forEach(w=>add('Día',DAYS_L[w],()=>state.wds.delete(w)));
+  if(state.from)add('Desde',fmtDate({d:pd(state.from)}),()=>{state.from='';$('#from').value=''});
+  if(state.to)add('Hasta',fmtDate({d:pd(state.to)}),()=>{state.to='';$('#to').value=''});
+  if(state.q)add('Búsqueda',state.q,()=>{state.q='';$('#q').value=''});
+  const box=$('#active'); box.innerHTML='';
+  tags.forEach(t=>{const b=document.createElement('button');b.type='button';b.className='tag';b.innerHTML=`<span>${esc(t.label)}: <b>${esc(t.val)}</b></span>`;b.setAttribute('aria-label',`Quitar filtro ${t.label}: ${t.val}`);b.onclick=()=>{t.fn();update()};box.appendChild(b)});
+}
+function updateSummary(f){
+  const hrs=f.reduce((a,r)=>a+r.dur,0);
+  const n=(g)=>new Set(f.map(g)).size;
+  const hs=String(Math.round(hrs*10)/10).replace('.',',');
+  $('#summary').innerHTML=`<span><b>${f.length}</b>de ${rows.length} sesiones</span><span><b>${hs}</b>horas</span><span><b>${n(r=>r.asignatura)}</b>asignaturas</span><span><b>${n(r=>r.profesor)}</b>profesores</span><span><b>${n(r=>r.sem)}</b>${n(r=>r.sem)===1?'semestre':'semestres'}</span>`;
+}
+
+/* Tabla */
+const COLS=[
+ {k:'fecha',l:'Fecha',cls:'num',cell:r=>`<time datetime="${r.fecha}">${fmtDate(r)}</time><span class="wd">${DAYS_L[r.wd]}</span>`,sort:r=>r.fecha+r.hi},
+ {k:'hi',l:'Hora inicio',cls:'num',cell:r=>r.hi,sort:r=>r.hi+r.fecha},
+ {k:'hf',l:'Hora final',cls:'num',cell:r=>r.hf,sort:r=>r.hf+r.fecha},
+ {k:'dur',l:'Duración',cls:'num',cell:r=>fmtDur(r.dur),sort:r=>r.dur},
+ {k:'asignatura',l:'Asignatura',cls:'asig',cell:r=>esc(r.asignatura),sort:r=>norm(r.asignatura)},
+ {k:'profesor',l:'Profesor',cls:'prof',cell:r=>esc(r.profesor),sort:r=>norm(r.profesor)},
+ {k:'sem',l:'Sem',cls:'',cell:r=>`<span class="pill s${r.sem}">Sem ${r.sem}</span>`,sort:r=>r.sem},
+ {k:'sesion',l:'Sesión',cls:'',cell:r=>`<span class="pill ${r.sesion==='Presencial'?'pres':'rem'}">${esc(r.sesion)}</span>`,sort:r=>r.sesion},
+ {k:'salon',l:'Salón',cls:'',cell:r=>r.salon==='Por definir'?'<span class="pending">Por definir</span>':esc(r.salon),sort:r=>r.salonL},
+];
+function sorted(f){
+  const c=COLS.find(c=>c.k===state.sort)||COLS[0];
+  return [...f].sort((a,b)=>{const x=c.sort(a),y=c.sort(b);let v=typeof x==='number'?x-y:(x<y?-1:x>y?1:0); if(!v)v=(a.fecha+a.hi).localeCompare(b.fecha+b.hi); return v*state.dir});
+}
+function emptyState(){return `<div class="empty-state"><p>Ninguna sesión coincide con estos filtros.</p><button class="linkbtn" type="button" data-clear>Quitar todos los filtros</button></div>`}
+function renderTable(res,f){
+  if(!f.length){res.innerHTML=emptyState();return}
+  const head=COLS.map(c=>`<th scope="col" ${state.sort===c.k?`aria-sort="${state.dir>0?'ascending':'descending'}"`:''}><button type="button" data-sort="${c.k}">${c.l}<span class="arr" aria-hidden="true">${state.sort===c.k?(state.dir>0?'▲':'▼'):'↕'}</span></button></th>`).join('');
+  const body=sorted(f).map(r=>`<tr>${COLS.map(c=>`<td class="${c.cls}" data-l="${c.l}">${c.cell(r)}</td>`).join('')}</tr>`).join('');
+  res.innerHTML=`<div class="tablewrap"><table><thead><tr>${head}</tr></thead><tbody>${body}</tbody></table></div>`;
+}
+
+/* Calendario */
+const monthsAll=[...new Set(rows.map(r=>r.month))].sort();
+function renderCal(res,f){
+  const [y,m]=state.calMonth.split('-').map(Number);
+  const byDay={}; f.forEach(r=>(byDay[r.fecha]||(byDay[r.fecha]=[])).push(r));
+  Object.values(byDay).forEach(a=>a.sort((p,q)=>p.hi.localeCompare(q.hi)));
+  const first=new Date(y,m-1,1), lead=(first.getDay()+6)%7, dim=new Date(y,m,0).getDate();
+  const todayISO=iso(new Date());
+  let cells=['lun','mar','mié','jue','vie','sáb','dom'].map(d=>`<div class="dow">${d}</div>`).join('');
+  for(let i=0;i<lead;i++)cells+='<div class="day out" aria-hidden="true"></div>';
+  for(let d=1;d<=dim;d++){
+    const key=`${y}-${pad(m)}-${pad(d)}`; const ev=byDay[key]||[];
+    const pills=ev.slice(0,3).map(r=>`<span class="ev ${r.sesion==='Presencial'?'p':'r'} s${r.sem}">S${r.sem} ${r.hi} ${esc(r.asignatura)}</span>`).join('');
+    const more=ev.length>3?`<span class="more">+${ev.length-3} más</span>`:'';
+    const dots=`<span class="dots">${ev.map(r=>`<i class="s${r.sem}"></i>`).join('')}</span>`;
+    cells+=`<button type="button" class="day ${key===todayISO?'today-c':''} ${key===state.selDay?'sel':''}" data-day="${key}" aria-label="${fmtLong(new Date(y,m-1,d))}, ${ev.length} ${ev.length===1?'sesión':'sesiones'}"><span class="dn">${d}</span>${pills}${more}${dots}</button>`;
+  }
+  const idx=monthsAll.indexOf(state.calMonth);
+  const sel=state.selDay?(byDay[state.selDay]||[]):[];
+  let panel='';
+  if(state.selDay){
+    panel=`<div class="daypanel"><h3>${fmtLong(pd(state.selDay))}</h3>${sel.length?`<div class="cards">${sel.map(card).join('')}</div>`:'<p>No hay sesiones este día con los filtros actuales.</p>'}</div>`;
+  } else panel=`<div class="daypanel"><h3>Elige un día</h3><p>Toca una fecha del calendario para ver el detalle de sus sesiones.</p></div>`;
+  res.innerHTML=`<div class="cal-head"><h3>${MON_L[m-1]} ${y}</h3><div class="cal-nav"><button type="button" data-cal="-1" ${idx<=0?'disabled':''} aria-label="Mes anterior">Anterior</button><button type="button" data-cal="1" ${idx>=monthsAll.length-1?'disabled':''} aria-label="Mes siguiente">Siguiente</button></div></div>
+  <div class="grid" role="group" aria-label="Calendario de ${MON_L[m-1]}">${cells}</div>
+  <div class="cal-key"><span><span class="ev p s1" style="display:inline-block">Relleno</span> sesión presencial</span><span><span class="ev r s1" style="display:inline-block">Contorno</span> sesión remota</span><span>El color indica el semestre.</span></div>${panel}`;
+}
+function card(r){
+  return `<article class="card s${r.sem}"><div class="hh">${r.hi} a ${r.hf} (${fmtDur(r.dur)})</div><h4>${esc(r.asignatura)}</h4><div>${esc(r.profesor)}</div>
+  <dl><dt>Sem</dt><dd>Semestre ${r.sem}</dd><dt>Sesión</dt><dd>${esc(r.sesion)}</dd><dt>Salón</dt><dd>${r.salon==='Por definir'?'<span class="pending">Por definir</span>':esc(r.salon)}</dd></dl></article>`;
+}
+
+/* Línea de tiempo del periodo */
+const startD=pd(MIN), endD=pd(MAX);
+const span=Math.round((endD-startD)/864e5)+1;
+const dayList=Array.from({length:span},(_,i)=>{const d=new Date(startD);d.setDate(d.getDate()+i);return iso(d)});
+const maxH=Math.max(...Object.values(rows.reduce((a,r)=>(a[r.fecha]=(a[r.fecha]||0)+r.dur,a),{})));
+function renderStrip(f){
+  const ok=new Set(f.map(r=>r.id));
+  const byDay={}; rows.forEach(r=>(byDay[r.fecha]||(byDay[r.fecha]=[])).push(r));
+  const unit=74/maxH;
+  $('#strip').innerHTML=dayList.map(d=>{
+    const ev=byDay[d]; if(!ev)return `<div class="bar empty" data-nd="1"></div>`;
+    const segs=ev.sort((a,b)=>a.hi.localeCompare(b.hi)).map(r=>`<span class="seg" style="height:${Math.max(3,r.dur*unit-1)}px;background:${ok.has(r.id)?`var(--sem${r.sem})`:'var(--gray)'};opacity:${ok.has(r.id)?1:.35}"></span>`).join('');
+    const inRange=state.from&&state.from===state.to&&state.from===d;
+    const t=ev.map(r=>`${r.hi} ${r.asignatura}`).join('\n');
+    return `<div class="bar ${inRange?'sel':''}" data-bar="${d}" title="${esc(fmtLong(pd(d))+'\n'+t)}">${segs}</div>`;
+  }).join('')+todayMark();
+  let mh=''; dayList.forEach((d,i)=>{if(d.endsWith('-01')||i===0){const mo=+d.slice(5,7)-1;mh+=`<span style="left:${i/span*100}%">${MON_S[mo]}</span>`}});
+  $('#months').innerHTML=mh;
+}
+function todayMark(){
+  const t=iso(new Date()); const i=dayList.indexOf(t); if(i<0)return '';
+  return `<div class="today" style="left:${(i+.5)/span*100}%"><span>Hoy</span></div>`;
+}
+
+/* Hero: próxima sesión */
+function renderHero(){
+  const asig=new Set(rows.map(r=>r.asignatura)).size;
+  const np=new Set(rows.map(r=>r.sem)).size;
+  $('#lead').textContent=`${rows.length} sesiones de ${asig} asignaturas de ${np} ${np===1?'semestre':'semestres'} de la Maestría en Comunicación Estratégica (MCE), entre el ${startD.getDate()} de ${MON_L[startD.getMonth()]} y el ${endD.getDate()} de ${MON_L[endD.getMonth()]} de ${endD.getFullYear()}. Filtra por cualquier columna del horario.`;
+  const now=new Date();
+  const withT=[...rows].sort((a,b)=>(a.fecha+a.hi).localeCompare(b.fecha+b.hi)).map(r=>{const[h,m]=r.hf.split(':').map(Number);const e=new Date(r.d);e.setHours(h,m,0,0);const[h2,m2]=r.hi.split(':').map(Number);const s=new Date(r.d);s.setHours(h2,m2,0,0);return {r,s,e}});
+  const nx=withT.find(x=>x.e>now);
+  const box=$('#next');
+  if(!nx){box.innerHTML=`<h2>Periodo finalizado</h2><p class="when">${endD.getDate()} de ${MON_L[endD.getMonth()]} de ${endD.getFullYear()}</p><p class="who">Fue la última sesión del calendario.</p>`;return}
+  const r=nx.r, live=nx.s<=now;
+  box.innerHTML=`<h2>${live?'En curso ahora':'Próxima sesión'}</h2><p class="when">${DAYS_L[r.wd][0].toUpperCase()+DAYS_L[r.wd].slice(1)} ${r.d.getDate()} de ${MON_L[r.d.getMonth()]}</p><p class="hours">${r.hi} a ${r.hf}, ${esc(r.sesion)}${r.salon!=='Por definir'?', '+esc(r.salon):', salón por definir'}</p><p class="what">${esc(r.asignatura)}</p><p class="who">${esc(r.profesor)}, semestre ${r.sem}</p><button type="button" id="goNext" data-date="${r.fecha}">Ver ese día en el calendario</button>`;
+}
+
+/* Eventos */
+buildFacets();
+document.addEventListener('change',e=>{
+  const t=e.target; if(t.matches('input[data-f]')){
+    const k=t.dataset.f,v=t.value;
+    if(k==='month')t.checked?state.months.add(v):state.months.delete(v);
+    else if(k==='wd')t.checked?state.wds.add(+v):state.wds.delete(+v);
+    else t.checked?state.sel[k].add(v):state.sel[k].delete(v);
+    update();
+  }
+});
+$('#from').addEventListener('change',e=>{state.from=e.target.value;update()});
+$('#to').addEventListener('change',e=>{state.to=e.target.value;update()});
+let qt; $('#q').addEventListener('input',e=>{clearTimeout(qt);qt=setTimeout(()=>{state.q=e.target.value.trim();update()},120)});
+$('#clear').onclick=clearAll;
+document.addEventListener('click',e=>{
+  const c=e.target.closest.bind(e.target);
+  let el;
+  if(el=c('[data-sort]')){const k=el.dataset.sort; if(state.sort===k)state.dir*=-1; else{state.sort=k;state.dir=1} syncSort(); update(); return}
+  if(el=c('[data-clear]')){clearAll();return}
+  if(el=c('[data-cal]')){const i=monthsAll.indexOf(state.calMonth)+Number(el.dataset.cal); state.calMonth=monthsAll[Math.max(0,Math.min(monthsAll.length-1,i))]; state.selDay=null; update(); return}
+  if(el=c('[data-day]')){state.selDay=el.dataset.day; update(); document.querySelector('.daypanel')?.scrollIntoView({block:'nearest',behavior:'smooth'}); return}
+  if(el=c('[data-bar]')){const d=el.dataset.bar; const same=state.from===d&&state.to===d; state.from=same?'':d; state.to=same?'':d; $('#from').value=state.from; $('#to').value=state.to; update(); return}
+  if(el=c('#goNext')){const d=el.dataset.date; setView('cal'); state.calMonth=d.slice(0,7); state.selDay=d; update(); $('#results').scrollIntoView({behavior:'smooth',block:'start'}); return}
+});
+function syncSort(){ $('#sortSel').value=state.sort+':'+(state.dir>0?'a':'d'); }
+$('#sortSel').innerHTML=COLS.flatMap(c=>[`<option value="${c.k}:a">${c.l} (ascendente)</option>`,`<option value="${c.k}:d">${c.l} (descendente)</option>`]).join('');
+$('#sortSel').addEventListener('change',e=>{const[k,d]=e.target.value.split(':');state.sort=k;state.dir=d==='a'?1:-1;update()});
+function setView(v){
+  state.view=v; $('#vTable').setAttribute('aria-pressed',v==='table'); $('#vCal').setAttribute('aria-pressed',v==='cal');
+  $('.sortsel').style.display=v==='table'?'':'none';
+}
+$('#vTable').onclick=()=>{setView('table');update()};
+$('#vCal').onclick=()=>{setView('cal');update()};
+$('#openFilters').onclick=()=>{document.body.classList.add('drawer');$('#filters').scrollTop=0};
+const closeD=()=>document.body.classList.remove('drawer');
+$('#closeDrawer').onclick=closeD; $('#apply').onclick=closeD;
+document.addEventListener('keydown',e=>{if(e.key==='Escape')closeD()});
+
+/* Tema */
+const root=document.documentElement;
+function applyTheme(t){ if(t)root.setAttribute('data-theme',t); }
+try{applyTheme(localStorage.getItem('mcp-theme'))}catch(e){}
+$('#theme').onclick=()=>{
+  const dark=root.getAttribute('data-theme')?root.getAttribute('data-theme')==='dark':matchMedia('(prefers-color-scheme: dark)').matches;
+  const n=dark?'light':'dark'; applyTheme(n); try{localStorage.setItem('mcp-theme',n)}catch(e){}
+};
+
+/* Inicio */
+renderHero(); syncSort();
+const todayM=iso(new Date()).slice(0,7);
+state.calMonth=monthsAll.includes(todayM)?todayM:monthsAll[0];
+update();
+</script>
+</body>
+</html>
